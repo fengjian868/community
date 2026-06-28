@@ -297,6 +297,12 @@
   <data name="Theme_HideFloatingBarBorderHint" xml:space="preserve">
     <value>Sets the floating bar border thickness to 0 for a borderless look.</value>
   </data>
+  <data name="Theme_UseBoardStyleFloatingToolbar" xml:space="preserve">
+    <value>Use whiteboard-style floating toolbar</value>
+  </data>
+  <data name="Theme_UseBoardStyleFloatingToolbarHint" xml:space="preserve">
+    <value>Use larger rounded rectangle cells and a blue selected state for floating bar buttons, similar to the whiteboard toolbar.</value>
+  </data>
   <data name="Theme_WindowBackdrop" xml:space="preserve">
     <value>Window background style</value>
   </data>

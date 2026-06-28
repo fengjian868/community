@@ -297,6 +297,12 @@
   <data name="Theme_HideFloatingBarBorderHint" xml:space="preserve">
     <value>开启后将浮动栏边框厚度设为 0，实现无白边效果。</value>
   </data>
+  <data name="Theme_UseBoardStyleFloatingToolbar" xml:space="preserve">
+    <value>使用白板风格浮动工具栏</value>
+  </data>
+  <data name="Theme_UseBoardStyleFloatingToolbarHint" xml:space="preserve">
+    <value>开启后浮动栏按钮将使用更大的圆角矩形单元和蓝色选中态，类似白板工具栏。</value>
+  </data>
   <data name="Theme_WindowBackdrop" xml:space="preserve">
     <value>窗口背景样式</value>
   </data>

@@ -200,6 +200,10 @@ namespace Ink_Canvas.Properties
 
         public static string Theme_HideFloatingBarBorderHint => ResourceManager.GetString(nameof(Theme_HideFloatingBarBorderHint), _resourceCulture);
 
+        public static string Theme_UseBoardStyleFloatingToolbar => ResourceManager.GetString(nameof(Theme_UseBoardStyleFloatingToolbar), _resourceCulture);
+
+        public static string Theme_UseBoardStyleFloatingToolbarHint => ResourceManager.GetString(nameof(Theme_UseBoardStyleFloatingToolbarHint), _resourceCulture);
+
         public static string Theme_WindowBackdrop => ResourceManager.GetString(nameof(Theme_WindowBackdrop), _resourceCulture);
 
         public static string Theme_WindowBackdrop_Acrylic => ResourceManager.GetString(nameof(Theme_WindowBackdrop_Acrylic), _resourceCulture);

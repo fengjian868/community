@@ -297,6 +297,12 @@
   <data name="Theme_HideFloatingBarBorderHint" xml:space="preserve">
     <value>打开后把装备栏边框厚度调成 0，白边就没了。</value>
   </data>
+  <data name="Theme_UseBoardStyleFloatingToolbar" xml:space="preserve">
+    <value>装备栏用白板风格</value>
+  </data>
+  <data name="Theme_UseBoardStyleFloatingToolbarHint" xml:space="preserve">
+    <value>打开后装备栏按钮变成大圆角方块，选中变蓝，跟白板工具栏一个样。</value>
+  </data>
   <data name="Theme_WindowBackdrop" xml:space="preserve">
     <value>窗口背景样式</value>
   </data>

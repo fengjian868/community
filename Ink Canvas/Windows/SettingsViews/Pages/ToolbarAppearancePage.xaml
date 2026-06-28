@@ -117,6 +117,13 @@
                             SwitchName="ToggleSwitchDisableToolbarAnimation"
                             Toggled="DisableToolbarAnimationToggleSwitch_Toggled" />
 
+                    <controls:LabeledSettingsCard x:Name="CardUseBoardStyleFloatingToolbar"
+                            Header="{x:Static props:ThemeStrings.Theme_UseBoardStyleFloatingToolbar}"
+                            Description="{x:Static props:ThemeStrings.Theme_UseBoardStyleFloatingToolbarHint}"
+                            Icon="{x:Static ui:SegoeFluentIcons.ViewAll}"
+                            SwitchName="ToggleSwitchUseBoardStyleFloatingToolbar"
+                            Toggled="ToggleSwitchUseBoardStyleFloatingToolbar_Toggled" />
+
                     <ui:SettingsExpander x:Name="ExpanderAutoFlipWhenSpaceInsufficient"
                             Header="空间不足时自动翻转" d:IsExpanded="True"
                             IsExpanded="{Binding IsOn, ElementName=ToggleSwitchAutoFlipWhenSpaceInsufficient, Mode=OneWay}"

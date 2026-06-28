@@ -637,6 +637,9 @@ namespace Ink_Canvas
 
         [JsonProperty("disableToolbarAnimation")]
         public bool DisableToolbarAnimation { get; set; } = false;
+
+        [JsonProperty("useBoardStyleFloatingToolbar")]
+        public bool UseBoardStyleFloatingToolbar { get; set; } = false;
     }
 
     public enum PPTLinkMode

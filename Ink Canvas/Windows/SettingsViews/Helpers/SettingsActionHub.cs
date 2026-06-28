@@ -280,6 +280,12 @@ namespace Ink_Canvas.Windows.SettingsViews.Helpers
             if (mw != null) mw.UpdateFloatingBarIcons();
         }
 
+        public static void OnUseBoardStyleFloatingToolbarChanged()
+        {
+            var mw = GetMainWindow();
+            if (mw != null) mw.RebuildToolbar();
+        }
+
         public static void OnFloatingBarScaleChanged(double actualScale)
         {
             var mw = GetMainWindow();

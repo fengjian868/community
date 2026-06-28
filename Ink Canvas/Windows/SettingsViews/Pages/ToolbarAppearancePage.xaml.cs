@@ -87,6 +87,12 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
                 CardDisableToolbarAnimation.IsOn = settings.Appearance.DisableToolbarAnimation;
             }
 
+            // 加载白板风格浮动工具栏设置
+            if (CardUseBoardStyleFloatingToolbar != null)
+            {
+                CardUseBoardStyleFloatingToolbar.IsOn = settings.Appearance.UseBoardStyleFloatingToolbar;
+            }
+
             // 加载旧版浮动栏 UI 设置
             if (CardUseLegacyFloatingBarUI != null)
                 CardUseLegacyFloatingBarUI.IsOn = settings.Appearance.UseLegacyFloatingBarUI;
@@ -230,6 +236,16 @@ namespace Ink_Canvas.Windows.SettingsViews.Pages
 
             SettingsManager.Settings.Appearance.DisableToolbarAnimation = CardDisableToolbarAnimation.IsOn;
             SettingsManager.SaveSettingsToFile();
+        }
+
+        private void ToggleSwitchUseBoardStyleFloatingToolbar_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!_isLoaded) return;
+            if (CardUseBoardStyleFloatingToolbar == null) return;
+
+            SettingsManager.Settings.Appearance.UseBoardStyleFloatingToolbar = CardUseBoardStyleFloatingToolbar.IsOn;
+            SettingsManager.SaveSettingsToFile();
+            SettingsActionHub.OnUseBoardStyleFloatingToolbarChanged();
         }
 
         private void ToggleSwitchUseLegacyFloatingBarUI_Toggled(object sender, RoutedEventArgs e)

@@ -11,10 +11,27 @@ namespace Ink_Canvas.Controls
     {
         private static ToolbarImageButton _lastPressedButton;
         private bool _isVerticalOrientation;
+        private bool _isSelected;
 
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
             nameof(Label), typeof(string), typeof(ToolbarImageButton),
             new PropertyMetadata(string.Empty, (d, e) => ((ToolbarImageButton)d).LabelTextBlock.Text = (string)e.NewValue));
+
+        public static readonly DependencyProperty UseBoardStyleProperty = DependencyProperty.Register(
+            nameof(UseBoardStyle), typeof(bool), typeof(ToolbarImageButton),
+            new PropertyMetadata(false, OnUseBoardStyleChanged));
+
+        private static void OnUseBoardStyleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var button = (ToolbarImageButton)d;
+            button.ApplyBoardStyle((bool)e.NewValue);
+        }
+
+        public bool UseBoardStyle
+        {
+            get => (bool)GetValue(UseBoardStyleProperty);
+            set => SetValue(UseBoardStyleProperty, value);
+        }
 
         public string Label
         {
@@ -93,6 +110,14 @@ namespace Ink_Canvas.Controls
         public void ApplyOrientation(bool isVertical)
         {
             _isVerticalOrientation = isVertical;
+            if (UseBoardStyle)
+            {
+                // 白板风格按钮为正方形单元，方向变化只影响外边框边距
+                ButtonPanel.Width = 52;
+                ButtonPanel.Height = 48;
+                ButtonBorder.Margin = new Thickness(1);
+                return;
+            }
             if (isVertical)
             {
                 ButtonPanel.Width = 43;
@@ -108,10 +133,87 @@ namespace Ink_Canvas.Controls
         }
 
         /// <summary>
+        /// 切换白板风格视觉：更大的按钮、圆角背景、图标文字居中。
+        /// </summary>
+        private void ApplyBoardStyle(bool useBoardStyle)
+        {
+            if (useBoardStyle)
+            {
+                ButtonBorder.Width = 52;
+                ButtonBorder.Height = 48;
+                ButtonBorder.CornerRadius = new CornerRadius(6);
+                ButtonBorder.Background = TryFindResource("BoardFloatBarBackground") as Brush ?? Brushes.Transparent;
+                ButtonBorder.Margin = new Thickness(1);
+
+                ButtonPanel.Width = 52;
+                ButtonPanel.Height = 48;
+
+                ButtonImage.Width = 20;
+                ButtonImage.Height = 20;
+                ButtonImage.HorizontalAlignment = HorizontalAlignment.Center;
+                ButtonImage.VerticalAlignment = VerticalAlignment.Top;
+                ButtonImage.Margin = new Thickness(0, 5, 0, 0);
+                ButtonImage.Stretch = Stretch.Uniform;
+
+                LabelTextBlock.FontSize = 11;
+                LabelTextBlock.Margin = new Thickness(0, 0, 0, 4);
+                LabelTextBlock.Visibility = Visibility.Visible;
+
+                PressedBackground.CornerRadius = new CornerRadius(6);
+                ApplyBoardStyleSelectionVisual();
+            }
+            else
+            {
+                ButtonBorder.Width = double.NaN;
+                ButtonBorder.Height = double.NaN;
+                ButtonBorder.CornerRadius = new CornerRadius(4);
+                ButtonBorder.Background = Brushes.Transparent;
+                ApplyOrientation(_isVerticalOrientation);
+
+                ButtonPanel.Width = _isVerticalOrientation ? 43 : 44;
+                ButtonPanel.Height = _isVerticalOrientation ? 44 : 43;
+
+                ButtonImage.Width = 24;
+                ButtonImage.Height = 24;
+                ButtonImage.HorizontalAlignment = HorizontalAlignment.Center;
+                ButtonImage.VerticalAlignment = VerticalAlignment.Top;
+                ButtonImage.Margin = new Thickness(0, 1, 0, 0);
+                ButtonImage.Stretch = Stretch.Uniform;
+
+                LabelTextBlock.FontSize = 13;
+                LabelTextBlock.Margin = new Thickness(0, 0, 0, 2);
+
+                PressedBackground.CornerRadius = new CornerRadius(4);
+                ButtonBorder.Background = Brushes.Transparent;
+            }
+        }
+
+        /// <summary>
         /// 应用紧凑浮动栏模式：开启后隐藏常驻文字标签，并让图标在保持纵横比的前提下拉伸填满空出的区域。
+        /// 白板风格下保持显示标签并等比缩小。
         /// </summary>
         public void ApplyCompactMode(bool compact)
         {
+            if (UseBoardStyle)
+            {
+                // 白板风格下紧凑模式仅轻微缩小尺寸，保持标签可见
+                if (compact)
+                {
+                    ButtonBorder.Width = 46;
+                    ButtonBorder.Height = 42;
+                    ButtonPanel.Width = 46;
+                    ButtonPanel.Height = 42;
+                    ButtonImage.Width = 18;
+                    ButtonImage.Height = 18;
+                    ButtonImage.Margin = new Thickness(0, 4, 0, 0);
+                    LabelTextBlock.FontSize = 10;
+                }
+                else
+                {
+                    ApplyBoardStyle(true);
+                }
+                return;
+            }
             if (compact)
             {
                 LabelTextBlock.Visibility = Visibility.Collapsed;
@@ -134,8 +236,30 @@ namespace Ink_Canvas.Controls
             }
         }
 
+        private void ApplyBoardStyleSelectionVisual()
+        {
+            if (!UseBoardStyle) return;
+            if (_isSelected)
+            {
+                var selectedBg = TryFindResource("BoardFloatBarSelectedBackground") as Brush;
+                if (selectedBg != null) ButtonBorder.Background = selectedBg;
+            }
+            else
+            {
+                var boardBg = TryFindResource("BoardFloatBarBackground") as Brush;
+                if (boardBg != null) ButtonBorder.Background = boardBg;
+            }
+        }
+
         public void SetSelectedVisualOffset(bool isSelected)
         {
+            _isSelected = isSelected;
+            if (UseBoardStyle)
+            {
+                ApplyBoardStyleSelectionVisual();
+                return;
+            }
+
             if (ButtonContent == null) return;
 
             var transform = ButtonContent.RenderTransform as TranslateTransform;

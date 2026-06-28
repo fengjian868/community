@@ -85,6 +85,11 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
             set => _isContentCollapsedByUser = value;
         }
 
+        /// <summary>
+        /// 是否使用白板风格浮动工具栏。
+        /// </summary>
+        public static bool UseBoardStyle => SettingsManager.Settings?.Appearance.UseBoardStyleFloatingToolbar ?? false;
+
         #region Ruleset evaluation
 
         public static bool EvaluateRuleset(ToolbarRuleset ruleset, Dictionary<string, bool> context)
@@ -952,6 +957,8 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
             return true;
         }
 
+
+
         private static FrameworkElement BuildAndRegister(IToolbarHost host, IToolbarItem item, Orientation orientation = Orientation.Horizontal)
         {
             try
@@ -960,6 +967,12 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                 if (view == null) return null;
                 host.RegisterView(item.Id, view);
                 item.ApplyOrientation(view, orientation);
+
+                if (view is ToolbarImageButton btn)
+                {
+                    btn.UseBoardStyle = UseBoardStyle;
+                }
+
                 return view;
             }
             catch (Exception ex)
