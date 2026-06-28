@@ -225,7 +225,7 @@
                             <TextBlock x:Name="PPTNavBarScaleText"
                                        VerticalAlignment="Center" FontFamily="Consolas" TextAlignment="Right"/>
                             <Slider x:Name="PPTNavBarScaleValueSlider" Minimum="0.5"
-                                    Maximum="1.5" Width="200" IsSnapToTickEnabled="True"
+                                    Maximum="2.0" Width="200" IsSnapToTickEnabled="True"
                                     TickFrequency="0.05" ValueChanged="PPTNavBarScaleValueSlider_ValueChanged"/>
                         </ikw:SimpleStackPanel>
                     </ui:SettingsCard>
