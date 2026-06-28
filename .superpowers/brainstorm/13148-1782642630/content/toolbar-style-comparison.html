@@ -1,0 +1,77 @@
+<h2>浮动栏主题设计方向</h2>
+<p class="subtitle">把白板工具栏的视觉风格复用到浮动栏上，同时保留现有功能和用户自定义</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">当前浮动栏样式</div>
+    <div class="mockup-body" style="padding: 20px; background: #f3f3f3; border-radius: 8px;">
+      <div style="display: inline-flex; align-items: center; background: white; border-radius: 8px; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="width: 24px; height: 24px; background: #e0e0e0; border-radius: 4px; margin: 4px;"></div>
+        <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 8px; min-width: 40px;">
+          <div style="width: 20px; height: 20px; background: #0066bf; border-radius: 3px;"></div>
+          <span style="font-size: 10px; margin-top: 2px;">批注</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 8px; min-width: 40px;">
+          <div style="width: 20px; height: 20px; background: #666; border-radius: 3px;"></div>
+          <span style="font-size: 10px; margin-top: 2px;">冻结</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; padding: 4px 8px; min-width: 40px;">
+          <div style="width: 20px; height: 20px; background: #d00; border-radius: 3px;"></div>
+          <span style="font-size: 10px; margin-top: 2px;">清空</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">目标：白板风格主题</div>
+    <div class="mockup-body" style="padding: 20px; background: #1a1a1a; border-radius: 8px;">
+      <div style="display: inline-flex; align-items: center; background: #2d2d2d; border-radius: 12px; padding: 6px; gap: 4px;">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 56px; height: 56px; background: #0066bf; border-radius: 8px; color: white;">
+          <div style="width: 24px; height: 24px; background: rgba(255,255,255,0.9); border-radius: 4px; margin-bottom: 4px;"></div>
+          <span style="font-size: 11px;">手势</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 56px; height: 56px; background: #3d3d3d; border-radius: 8px; color: #ccc;">
+          <div style="width: 24px; height: 24px; background: #aaa; border-radius: 4px; margin-bottom: 4px;"></div>
+          <span style="font-size: 11px;">背景</span>
+        </div>
+        <div style="width: 1px; height: 40px; background: #555; margin: 0 4px;"></div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 56px; height: 56px; background: #0066bf; border-radius: 8px; color: white;">
+          <div style="width: 24px; height: 24px; background: rgba(255,255,255,0.9); border-radius: 4px; margin-bottom: 4px;"></div>
+          <span style="font-size: 11px;">笔</span>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 56px; height: 56px; background: #3d3d3d; border-radius: 8px; color: #ccc;">
+          <div style="width: 24px; height: 24px; background: #aaa; border-radius: 4px; margin-bottom: 4px;"></div>
+          <span style="font-size: 11px;">冻结</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>设计要点</h3>
+  <ul>
+    <li><strong>不改动按钮逻辑</strong>：现有浮动栏的按钮注册、点击事件、隐藏规则全部保留</li>
+    <li><strong>只改视觉模板</strong>：通过切换 <code>ToolbarImageButton</code> 的 ControlTemplate 实现外形变化</li>
+    <li><strong>用户可开关</strong>：在“工具栏外观”设置页新增“使用白板风格工具栏”开关</li>
+    <li><strong>可进一步自定义</strong>：按钮大小、圆角、分组间距等可通过现有设置机制扩展</li>
+  </ul>
+</div>
+
+<div class="options">
+  <div class="option" data-choice="style-only" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>纯样式切换（推荐）</h3>
+      <p>只改 ToolbarImageButton 的 ControlTemplate，保持所有现有逻辑和配置</p>
+    </div>
+  </div>
+  <div class="option" data-choice="adapter" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>复用 BoardToolbarButton</h3>
+      <p>把浮动栏按钮渲染成真正的 BoardToolbarButton，视觉还原度最高，但改动面较大</p>
+    </div>
+  </div>
+</div>
