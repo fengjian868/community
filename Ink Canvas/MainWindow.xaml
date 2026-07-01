@@ -868,6 +868,9 @@
                                 BorderBrush="{DynamicResource FloatBarBorderBrush}"
                                 MouseDown="SymbolIconEmoji_MouseDown"
                                 MouseUp="SymbolIconEmoji_MouseUp">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" BlurRadius="14" ShadowDepth="2" Opacity="0.16"/>
+                            </Border.Effect>
                             <Image Name="FloatingbarHeadIconImg" Margin="0.5"
                                    SnapsToDevicePixels="True"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"

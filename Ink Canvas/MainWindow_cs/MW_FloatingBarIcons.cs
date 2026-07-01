@@ -5267,6 +5267,14 @@ namespace Ink_Canvas
         {
             try
             {
+                // 白板风格：由按钮自身的 ApplyBoardStyleSelectionVisual 管理选中态（蓝色背景 + 白色图标），
+                // 不再走蓝色图标高亮逻辑（否则蓝图标叠加蓝背景会导致图标不可见）。
+                if (Controls.Toolbar.FloatingToolbar.ToolbarRegistry.UseBoardStyle)
+                {
+                    ApplyBoardStyleIconHighlightImmediate(mode);
+                    return;
+                }
+
                 Color highlightBarColor;
                 bool isDarkTheme = Settings.Appearance.Theme == 1 ||
                                    (Settings.Appearance.Theme == 2 && !ThemeHelper.IsSystemThemeLight());
@@ -5346,6 +5354,50 @@ namespace Ink_Canvas
             }
         }
 
+        /// <summary>
+        /// 白板风格下的浮动栏图标高亮：选中按钮显示蓝色背景 + 白色图标，其余按钮恢复白板背景。
+        /// 直接通过 SetSelectedVisualOffset 触发 ApplyBoardStyleSelectionVisual，不依赖延迟动画。
+        /// </summary>
+        private void ApplyBoardStyleIconHighlightImmediate(string mode)
+        {
+            try
+            {
+                if (isFloatingBarFolded || (BorderFloatingBarMoveControls != null && BorderFloatingBarMoveControls.Visibility == Visibility.Collapsed))
+                    return;
+
+                // 重置所有主工具按钮为非选中态
+                var allButtons = new[]
+                {
+                    Cursor_Icon, Pen_Icon, Eraser_Icon, EraserByStrokes_Icon,
+                    SymbolIconSelect, ShapeDrawFloatingBarBtn
+                };
+                foreach (var btn in allButtons)
+                {
+                    if (btn != null) btn.SetSelectedVisualOffset(false);
+                }
+
+                // 确定目标按钮
+                ToolbarImageButton targetButton = null;
+                switch (mode)
+                {
+                    case "cursor": targetButton = Cursor_Icon; break;
+                    case "pen":
+                    case "color": targetButton = Pen_Icon; break;
+                    case "eraser": targetButton = Eraser_Icon; break;
+                    case "eraserByStrokes": targetButton = EraserByStrokes_Icon; break;
+                    case "select": targetButton = SymbolIconSelect; break;
+                    case "shape": targetButton = ShapeDrawFloatingBarBtn; break;
+                }
+
+                if (targetButton != null)
+                    targetButton.SetSelectedVisualOffset(true);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleException(ex, "更新白板风格浮动栏图标高亮状态失败", LogHelper.LogType.Warning);
+            }
+        }
+
         private void AnimateFloatingBarHighlightTo(string mode)
         {
             try
@@ -5355,6 +5407,29 @@ namespace Ink_Canvas
                 var container = GridFloatingBarContainer;
 
                 if (selectionBG == null || indicatorBar == null || container == null) return;
+
+                // 白板风格：选中态视觉已由 ApplyBoardStyleIconHighlightImmediate 即时处理，
+                // 隐藏旧的高光覆盖层（选中背景框 + 指示条），仅记录 lastHighlightButton。
+                if (Controls.Toolbar.FloatingToolbar.ToolbarRegistry.UseBoardStyle)
+                {
+                    selectionBG.Visibility = Visibility.Hidden;
+                    indicatorBar.RenderTransform = null;
+                    indicatorBar.Visibility = Visibility.Hidden;
+
+                    ToolbarImageButton boardTarget = null;
+                    switch (mode)
+                    {
+                        case "cursor": boardTarget = Cursor_Icon; break;
+                        case "pen":
+                        case "color": boardTarget = Pen_Icon; break;
+                        case "eraser": boardTarget = Eraser_Icon; break;
+                        case "eraserByStrokes": boardTarget = EraserByStrokes_Icon; break;
+                        case "select": boardTarget = SymbolIconSelect; break;
+                        case "shape": boardTarget = ShapeDrawFloatingBarBtn; break;
+                    }
+                    _lastHighlightButton = boardTarget;
+                    return;
+                }
 
                 ToolbarImageButton targetButton = null;
 
@@ -5469,7 +5544,7 @@ namespace Ink_Canvas
                     System.Windows.Controls.Canvas.SetTop(indicatorBar, nextBarTop);
 
                     selectionBG.Visibility = Visibility.Visible;
-                    if (!Settings.Appearance.DisableToolbarAnimation)
+                    if (!Settings.Appearance.DisableToolbarAnimation || Controls.Toolbar.FloatingToolbar.ToolbarRegistry.UseBoardStyle)
                         targetButton.SetSelectedVisualOffset(true);
                     _lastHighlightButton = targetButton;
                     return;
@@ -5509,7 +5584,7 @@ namespace Ink_Canvas
                 var prevHighlightButton = _lastHighlightButton;
                 _lastHighlightButton = targetButton;
 
-                if (!Settings.Appearance.DisableToolbarAnimation)
+                if (!Settings.Appearance.DisableToolbarAnimation || Controls.Toolbar.FloatingToolbar.ToolbarRegistry.UseBoardStyle)
                 {
                     if (prevHighlightButton != null && prevHighlightButton != targetButton)
                         prevHighlightButton.SetSelectedVisualOffset(false);

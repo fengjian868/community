@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
 {
@@ -89,6 +90,23 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
         /// 是否使用白板风格浮动工具栏。
         /// </summary>
         public static bool UseBoardStyle => SettingsManager.Settings?.Appearance.UseBoardStyleFloatingToolbar ?? false;
+
+        /// <summary>
+        /// 浮动栏阴影效果，供 ContentBorder 复用。
+        /// </summary>
+        private static readonly DropShadowEffect FloatingBarShadowEffect = new DropShadowEffect
+        {
+            Color = Color.FromRgb(0, 0, 0),
+            BlurRadius = 14,
+            ShadowDepth = 2,
+            Opacity = 0.16
+        };
+
+        private static void ApplyFloatingBarShadow(Border border)
+        {
+            if (border == null) return;
+            border.Effect = FloatingBarShadowEffect;
+        }
 
         #region Ruleset evaluation
 
@@ -787,6 +805,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
             };
             border.SetResourceReference(Border.BackgroundProperty, "FloatBarBackground");
             border.SetResourceReference(Border.BorderBrushProperty, "FloatBarBorderBrush");
+            ApplyFloatingBarShadow(border);
 
             return border;
         }
@@ -824,6 +843,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                 };
                 wrapper.SetResourceReference(Border.BackgroundProperty, "FloatBarBackground");
                 wrapper.SetResourceReference(Border.BorderBrushProperty, "FloatBarBorderBrush");
+                ApplyFloatingBarShadow(wrapper);
 
                 view.HorizontalAlignment = HorizontalAlignment.Center;
                 view.VerticalAlignment = VerticalAlignment.Center;
@@ -856,6 +876,7 @@ namespace Ink_Canvas.Controls.Toolbar.FloatingToolbar
                 };
                 wrapper.SetResourceReference(Border.BackgroundProperty, "FloatBarBackground");
                 wrapper.SetResourceReference(Border.BorderBrushProperty, "FloatBarBorderBrush");
+                ApplyFloatingBarShadow(wrapper);
 
                 view.HorizontalAlignment = HorizontalAlignment.Center;
                 view.VerticalAlignment = VerticalAlignment.Center;

@@ -112,10 +112,10 @@ namespace Ink_Canvas.Controls
             _isVerticalOrientation = isVertical;
             if (UseBoardStyle)
             {
-                // 白板风格按钮为正方形单元，方向变化只影响外边框边距
-                ButtonPanel.Width = 52;
-                ButtonPanel.Height = 48;
-                ButtonBorder.Margin = new Thickness(1);
+                // 白板风格：固定 60×50，无方向偏移
+                ButtonPanel.Width = 60;
+                ButtonPanel.Height = 50;
+                ButtonBorder.Margin = new Thickness(0);
                 return;
             }
             if (isVertical)
@@ -133,33 +133,42 @@ namespace Ink_Canvas.Controls
         }
 
         /// <summary>
-        /// 切换白板风格视觉：更大的按钮、圆角背景、图标文字居中。
+        /// 切换白板风格视觉：匹配 BoardToolbarButton 的 60×50 尺寸、圆角 5、图标 20×20、文字 12px。
         /// </summary>
         private void ApplyBoardStyle(bool useBoardStyle)
         {
             if (useBoardStyle)
             {
-                ButtonBorder.Width = 52;
-                ButtonBorder.Height = 48;
-                ButtonBorder.CornerRadius = new CornerRadius(6);
+                // 匹配 BoardToolbarButton: Width=60, Height=50, CornerRadius=5
+                ButtonBorder.Width = 60;
+                ButtonBorder.Height = 50;
+                ButtonBorder.CornerRadius = new CornerRadius(5);
                 ButtonBorder.Background = TryFindResource("BoardFloatBarBackground") as Brush ?? Brushes.Transparent;
-                ButtonBorder.Margin = new Thickness(1);
+                ButtonBorder.Margin = new Thickness(0);
+                ButtonBorder.BorderThickness = new Thickness(0);
 
-                ButtonPanel.Width = 52;
-                ButtonPanel.Height = 48;
+                ButtonPanel.Width = 60;
+                ButtonPanel.Height = 50;
 
+                // 内部 Grid 边距匹配 BoardToolbarButton: Margin="0,6,0,4"
+                ButtonContent.Margin = new Thickness(0, 6, 0, 4);
+
+                // 图标 20×20，顶部对齐
                 ButtonImage.Width = 20;
                 ButtonImage.Height = 20;
                 ButtonImage.HorizontalAlignment = HorizontalAlignment.Center;
                 ButtonImage.VerticalAlignment = VerticalAlignment.Top;
-                ButtonImage.Margin = new Thickness(0, 5, 0, 0);
+                ButtonImage.Margin = new Thickness(0);
                 ButtonImage.Stretch = Stretch.Uniform;
 
-                LabelTextBlock.FontSize = 11;
-                LabelTextBlock.Margin = new Thickness(0, 0, 0, 4);
+                // 文字 12px，底部对齐
+                LabelTextBlock.FontSize = 12;
+                LabelTextBlock.Margin = new Thickness(0);
+                LabelTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                LabelTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
                 LabelTextBlock.Visibility = Visibility.Visible;
 
-                PressedBackground.CornerRadius = new CornerRadius(6);
+                PressedBackground.CornerRadius = new CornerRadius(5);
                 ApplyBoardStyleSelectionVisual();
             }
             else
@@ -168,20 +177,24 @@ namespace Ink_Canvas.Controls
                 ButtonBorder.Height = double.NaN;
                 ButtonBorder.CornerRadius = new CornerRadius(4);
                 ButtonBorder.Background = Brushes.Transparent;
+                ButtonBorder.BorderThickness = new Thickness(0);
                 ApplyOrientation(_isVerticalOrientation);
 
                 ButtonPanel.Width = _isVerticalOrientation ? 43 : 44;
                 ButtonPanel.Height = _isVerticalOrientation ? 44 : 43;
 
+                ButtonContent.Margin = new Thickness(0);
+
                 ButtonImage.Width = 24;
                 ButtonImage.Height = 24;
                 ButtonImage.HorizontalAlignment = HorizontalAlignment.Center;
                 ButtonImage.VerticalAlignment = VerticalAlignment.Top;
-                ButtonImage.Margin = new Thickness(0, 1, 0, 0);
                 ButtonImage.Stretch = Stretch.Uniform;
+                ButtonImage.Margin = new Thickness(0, 1, 0, 0);
 
                 LabelTextBlock.FontSize = 13;
                 LabelTextBlock.Margin = new Thickness(0, 0, 0, 2);
+                LabelTextBlock.VerticalAlignment = VerticalAlignment.Bottom;
 
                 PressedBackground.CornerRadius = new CornerRadius(4);
                 ButtonBorder.Background = Brushes.Transparent;
@@ -241,13 +254,27 @@ namespace Ink_Canvas.Controls
             if (!UseBoardStyle) return;
             if (_isSelected)
             {
+                // 选中态：蓝色背景 + 白色图标/文字（匹配白板工具栏）
                 var selectedBg = TryFindResource("BoardFloatBarSelectedBackground") as Brush;
+                var selectedFg = TryFindResource("BoardFloatBarSelectedForeground") as Brush;
                 if (selectedBg != null) ButtonBorder.Background = selectedBg;
+                if (selectedFg != null)
+                {
+                    IconGeometryInternal.Brush = selectedFg;
+                    LabelTextBlock.Foreground = selectedFg;
+                }
             }
             else
             {
+                // 非选中态：恢复白板背景 + 正常图标/文字颜色
                 var boardBg = TryFindResource("BoardFloatBarBackground") as Brush;
+                var iconFg = TryFindResource("IconForeground") as Brush ?? TryFindResource("FloatBarForeground") as Brush;
                 if (boardBg != null) ButtonBorder.Background = boardBg;
+                if (iconFg != null)
+                {
+                    IconGeometryInternal.Brush = iconFg;
+                    LabelTextBlock.Foreground = iconFg;
+                }
             }
         }
 
